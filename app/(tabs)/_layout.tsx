@@ -1,28 +1,48 @@
 import { Tabs } from 'expo-router';
-import { CalendarDays } from 'lucide-react-native';
+import { House, Ruler, Settings, Utensils } from 'lucide-react-native';
 import React from 'react';
 
 import { HapticTab } from '@/components/haptic-tab';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useTheme } from '@/hooks/use-theme-color';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Daily',
-          tabBarIcon: ({ color }) => <CalendarDays size={28} color={color} />,
-        }}
-      />
-    </Tabs>
-  );
+    const theme = useTheme();
+    return (
+        <Tabs
+        screenOptions={{
+            tabBarActiveTintColor: theme.tint,
+            headerShown: false,
+            tabBarButton: HapticTab,
+            tabBarLabelStyle: { fontWeight: 600 },
+        }}>
+            <Tabs.Screen
+                name="index"
+                options={{
+                    title: 'Home',
+                    tabBarIcon: ({ color }) => <House size={28} color={color} />,
+                }}
+            />
+            <Tabs.Screen
+                name="record"
+                options={{
+                    title: 'Record',
+                    tabBarIcon: ({ color }) => <Ruler size={28} color={color} />,
+                }}
+            />
+            <Tabs.Screen
+                name="diet"
+                options={{
+                    title: 'Diet',
+                    tabBarIcon: ({ color }) => <Utensils size={28} color={color} />,
+                }}
+            />
+            <Tabs.Screen
+                name="settings"
+                options={{
+                    title: 'Settings',
+                    tabBarIcon: ({ color }) => <Settings size={28} color={color} />,
+                }}
+            />
+        </Tabs>
+    );
 }
