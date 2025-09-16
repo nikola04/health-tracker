@@ -1,4 +1,6 @@
+import PageTitle from '@/components/ui/page-title';
 import ProgressLine from '@/components/ui/progress-line';
+import BlurredScrollView from '@/components/ui/scroll-view';
 import ThemedText from '@/components/ui/themed-text';
 import { ThemedBlockView, ThemedView } from '@/components/ui/themed-view';
 import { customColors } from '@/constants/theme';
@@ -6,11 +8,9 @@ import useCalories from '@/hooks/use-calories';
 import { useTheme } from '@/hooks/use-theme-color';
 import { PlatformPressable } from '@react-navigation/elements';
 import { ChartPie, ChevronRight, LucideIcon, TrendingDown, TrendingUp, Weight, Zap } from 'lucide-react-native';
-import { ScrollView, Text, View, ViewProps } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Text, View, ViewProps } from 'react-native';
 
 export default function DailyScreen() {
-    const theme = useTheme();
     const { calories } = useCalories();
     
     if(calories === null){
@@ -19,32 +19,27 @@ export default function DailyScreen() {
         </ThemedView>
     }
 
-    return <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }} >
-        <ScrollView contentContainerClassName='flex-1 px-4 gap-6' contentContainerStyle={{ alignItems: 'center' }}>
-            <ThemedView className='px-4 pt-8 pb-6 gap-2 items-center'>
-                <ThemedText className='text-3xl' style={{ fontFamily: 'Poppins', fontWeight: 600 }}>Diet Tracker</ThemedText>
-                <ThemedText>Track your meals and calories intake</ThemedText>
-            </ThemedView>
-            <SectionView title='Daily calories' titleColor='black' icon={Zap} style={{ backgroundColor: theme.primaryAlt }} containerProps={{ className: 'flex-row justify-around py-2' }}>
-                <View>
-                    <View className='flex-row items-baseline gap-1'>
-                        <Text className='text-3xl'>1740</Text>
-                        <Text>kcal</Text>
-                    </View>
-                    <Text>today</Text>
+    return <BlurredScrollView gradient={true}>
+        <PageTitle title='Diet Tracker' description='Track your meals and calories intake' color='white' />
+        <SectionView title='Daily calories' icon={Zap}  containerProps={{ className: 'flex-row justify-around py-2' }}>
+            <View>
+                <View className='flex-row items-baseline gap-1'>
+                    <ThemedText className='text-3xl'>1740</ThemedText>
+                    <ThemedText>kcal</ThemedText>
                 </View>
-                <View>
-                    <View className='flex-row items-baseline gap-1'>
-                        <Text className='text-3xl'>1913</Text>
-                        <Text>kcal</Text>
-                    </View>
-                    <Text>average</Text>
+                <ThemedText>today</ThemedText>
+            </View>
+            <View>
+                <View className='flex-row items-baseline gap-1'>
+                    <ThemedText className='text-3xl'>1913</ThemedText>
+                    <ThemedText>kcal</ThemedText>
                 </View>
-            </SectionView>
-            <NutrientsSection />
-            <WeightSection />
-        </ScrollView>
-    </SafeAreaView>
+                <ThemedText>average</ThemedText>
+            </View>
+        </SectionView>
+        <NutrientsSection />
+        <WeightSection />
+    </BlurredScrollView>
 }
 
 function SectionView({ children, title, icon, titleColor, className, containerProps, onPress, ...rest }: {

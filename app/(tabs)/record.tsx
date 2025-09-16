@@ -1,18 +1,9 @@
 
-import ThemedText from '@/components/ui/themed-text';
-import { ThemedView } from '@/components/ui/themed-view';
-import useCalories from '@/hooks/use-calories';
+import PageTitle from '@/components/ui/page-title';
+import BlurredScrollView from '@/components/ui/scroll-view';
 
-export default function DailyScreen() {
-    const { calories } = useCalories();
-    
-    if(calories === null){
-        return <ThemedView>
-            <ThemedText>Loading</ThemedText>
-        </ThemedView>
-    }
-
-    return <ThemedView className='flex-1 items-center justify-center'>
-        {/* <CaloriesView current={calories} goal={2100} /> */}
-    </ThemedView>
+export default function RecordScreen() {
+    return <BlurredScrollView>
+        <PageTitle title='Record Measurments' description='Record your measured weight and size'/>
+    </BlurredScrollView>
 }
