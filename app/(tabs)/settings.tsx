@@ -1,6 +1,8 @@
-import { ThemedView } from '@/components/ui/themed-view';
+import PageTitle from '@/components/ui/page-title';
+import BlurredScrollView from '@/components/ui/scroll-view';
 
 export default function SettingsScreen() {
-    return <ThemedView className='flex-1 items-center justify-center'>
-    </ThemedView>
+    return <BlurredScrollView>
+        <PageTitle title='Settings' description='Setup application theme, units and sync'/>
+    </BlurredScrollView>
 }

@@ -3,12 +3,14 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 import './globals.css';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useTheme } from '@/hooks/use-theme-color';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { useEffect } from 'react';
-import { View } from 'react-native';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -48,15 +50,16 @@ export default function RootLayout() {
         return null;
     }
 
-
     return (
         <ThemeProvider value={navigationTheme}>
-            <View className='flex-1' style={{ backgroundColor: theme.background }}>
-                <Stack>
-                    <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                </Stack>
-                <StatusBar style="auto" />
-            </View>
+            <GestureHandlerRootView style={{ flex: 1, backgroundColor: theme.background }}>
+                <BottomSheetModalProvider>
+                    <Stack>
+                        <Stack.Screen name="(tabs)" options={{ headerShown: false, keyboardHandlingEnabled: true }} />
+                    </Stack>
+                    <StatusBar style="auto" />
+                </BottomSheetModalProvider>
+            </GestureHandlerRootView>
         </ThemeProvider>
     );
 }

@@ -42,12 +42,12 @@ export function CustomButton({ title, color, backgroundColor, onPressColor, icon
     }));
 
     const handlePressIn = (e: GestureResponderEvent) => {
-        pressed.value = withTiming(1, { duration: 100, easing: Easing.ease });
+        pressed.value = withTiming(1, { duration: 120, easing: Easing.ease });
         onPressIn?.(e);
     };
 
     const handlePressOut = (e: GestureResponderEvent) => {
-        pressed.value = withTiming(0, { duration: 75, easing: Easing.ease });
+        pressed.value = withTiming(0, { duration: 90, easing: Easing.ease });
         onPressOut?.(e);
     };
 

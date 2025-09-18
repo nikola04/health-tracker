@@ -20,8 +20,8 @@ export default function DailyScreen() {
     }
 
     return <BlurredScrollView gradient={true}>
-        <PageTitle title='Diet Tracker' description='Track your meals and calories intake' color='white' />
-        <SectionView title='Daily calories' icon={Zap}  containerProps={{ className: 'flex-row justify-around py-2' }}>
+        <PageTitle title='Healthy Diet' description='Track your meals and calories intake' color='white' />
+        <SectionView title='Daily calories' icon={Zap} containerProps={{ className: 'flex-row justify-around py-2' }}>
             <View>
                 <View className='flex-row items-baseline gap-1'>
                     <ThemedText className='text-3xl'>1740</ThemedText>
@@ -52,7 +52,7 @@ function SectionView({ children, title, icon, titleColor, className, containerPr
     const theme = useTheme();
     if(!titleColor) titleColor = theme.text;
     const Icon = icon;
-    return <PlatformPressable className='w-full' onPress={onPress}>
+    return <PlatformPressable style={{ width: '100%', maxWidth: 600 }} onPress={onPress}>
         <ThemedBlockView className={`p-5 gap-4 rounded-3xl ${className}`} {...rest}>
             <View className='flex-row items-center'>
                 <View className='flex-row items-center justify-start gap-3'>
