@@ -4,8 +4,9 @@ import BlurredScrollView from '@/components/ui/scroll-view';
 import SliderButton from '@/components/ui/slider-button';
 import ThemedText from '@/components/ui/themed-text';
 import { ThemedBlockView } from '@/components/ui/themed-view';
+import useMeals from '@/hooks/use-meals';
 import { useTheme } from '@/hooks/use-theme-color';
-import { BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { BottomSheetBackdrop, BottomSheetFlatList, BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { PlatformPressable } from '@react-navigation/elements';
 import { ImpactFeedbackStyle } from 'expo-haptics';
 import { Beef, CupSoda, LucideIcon, NotebookText, Pin, Plus, Search, Soup } from 'lucide-react-native';
@@ -22,6 +23,15 @@ export default function DietScreen() {
         bottomSheetModalRef.current?.present();
     }, []);
 
+    const handleModalAnimate = useCallback((fromIndex: number, toIndex: number) => {
+        if(toIndex >= fromIndex) return;
+        Keyboard.dismiss(); // only on collapse
+    }, [])
+
+    const handleSearchFocus = useCallback(() => {
+        bottomSheetModalRef.current?.expand();
+    }, []);
+
     const snapPoints = useMemo(() => ['55%', Dimensions.get('window').height - insets.top], [insets.top]);
 
     return <BlurredScrollView>
@@ -36,12 +46,20 @@ export default function DietScreen() {
         <BottomSheetModal
             ref={bottomSheetModalRef}
             snapPoints={snapPoints}
-            onAnimate={Keyboard.dismiss}
-            index={1}
+            onAnimate={handleModalAnimate}
+            index={0}
             keyboardBehavior='interactive'
+            enableDynamicSizing={false}
+            backdropComponent={(props) => (
+                <BottomSheetBackdrop
+                    {...props}
+                    disappearsOnIndex={-1}
+                    appearsOnIndex={0}
+                />
+            )}
             keyboardBlurBehavior='restore'
             backgroundStyle={{
-                backgroundColor: theme.backgroundAlt,
+                backgroundColor: theme.background,
                 borderRadius: 24,
                 shadowColor: '#000',
                 shadowOffset: { width: 0, height: 2 },
@@ -51,19 +69,25 @@ export default function DietScreen() {
             }}
             handleIndicatorStyle={{ backgroundColor: theme.text }}
           >
-            <AddMealModal />
+            <AddMealModal onSearchFocus={handleSearchFocus} />
         </BottomSheetModal>
     </BlurredScrollView>
 }
 
-function AddMealModal(){
+function AddMealModal({ onSearchFocus }: {
+    onSearchFocus: () => any;
+}){
     const theme = useTheme();
 
     const defaultMealType = 0;
     const [activeMealType, setActiveMealType] = useState<number>(defaultMealType);
+
+    const [search, onSearchChange] = useState<string>('')
     const mealType: string = useMemo(() => activeMealType === 0 ? 'food' : 'drink', [activeMealType]);
 
-    return <BottomSheetScrollView keyboardShouldPersistTaps="handled" keyboardAvoidingBehavior="padding" contentContainerClassName='flex-col items-center gap-8 p-4'>
+    const { meals } = useMeals(search, mealType);
+
+    return <BottomSheetView className='flex-col items-center gap-8 p-4'>
         <View className='flex-col items-center gap-1'>
             <Text className='text-xl font-semibold' style={{ color: theme.text }}>What have you eaten?</Text>
             <Text className='opacity-50' style={{ color: theme.text }}>Select meal and quantity</Text>
@@ -72,20 +96,36 @@ function AddMealModal(){
             items={[{ Icon: Beef, title: 'Food' }, { Icon: CupSoda, title: 'Drink' }]}
             defaultActive={defaultMealType}
             onChange={setActiveMealType}
-            backgroundColor={theme.background}
+            backgroundColor={theme.backgroundAlt}
         />
         <View className='w-full flex-col gap-2'>
             <Text className='text-lg font-semibold px-4' style={{ color: theme.text }}>Select Meal</Text>
-            <SearchBar placeholder='search meals...' />
+            <SearchBar placeholder='search meals...' value={search} onChangeText={onSearchChange} onFocus={onSearchFocus} />
         </View>
-    </BottomSheetScrollView>
+        <BottomSheetFlatList
+            data={meals}
+            keyExtractor={(item: any) => item.id}
+            renderItem={({ item }: { item: any }) => <MealItem item={item} />} 
+            contentContainerStyle={{ flex: 1, gap: 8 }}
+            className="w-full"
+        />
+    </BottomSheetView>
+}
+
+function MealItem({ item }: {
+    item: any
+}){
+    const theme = useTheme();
+    return <View className='flex-row w-full p-4 rounded-3xl items-center justify-center' style={{ backgroundColor: theme.backgroundAlt }}>
+        <Text className='' style={{ color: theme.text }}>{ item.name.en }</Text>
+    </View>
 }
 
 function SearchBar({ style, ...rest }: TextInputProps){
     const theme = useTheme();
-    return <View className='w-full flex-row items-center gap-4 p-4 rounded-3xl' style={{ backgroundColor: theme.background }}>
-        <Search color={theme.text} />
-        <TextInput style={[{ flexGrow: 1, color: theme.text, fontSize: 17 }, style]} {...rest} />
+    return <View className='w-full flex-row items-center gap-4 p-4 rounded-3xl' style={{ backgroundColor: theme.backgroundAlt }}>
+        <Search color={theme.text} size={21} />
+        <TextInput style={[{ flexGrow: 1, color: theme.text, fontSize: 16 }, style]} {...rest} />
     </View>
 }
 
