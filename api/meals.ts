@@ -10,7 +10,7 @@ interface MealResponse {
     type: string
 }
 
-export const searchMealsAPI = async (name: string, type: string, config?: { limit?: number, page?: number }): Promise<MealResponse|null> => {
+export const searchMealsAPI = async (name: string|null, type: string|null, config?: { limit?: number, page?: number }): Promise<MealResponse|null> => {
     const limit = config?.limit ?? 5;
     const page = config?.page ?? 1;
     try{

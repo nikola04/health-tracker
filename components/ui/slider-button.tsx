@@ -4,14 +4,13 @@ import { LucideIcon } from "lucide-react-native";
 import { useCallback, useEffect, useState } from "react";
 import { Text, View } from "react-native";
 
-
-
-export default function SliderButton({ items, defaultActive, onChange, backgroundColor, color }: {
+export default function SliderButton({ items, defaultActive, enableUnselect, onChange, backgroundColor, color }: {
     items: {
         title?: string,
         Icon?: LucideIcon
     }[];
     defaultActive?: number;
+    enableUnselect?: boolean;
     onChange?: (key: number) => any;
     backgroundColor?: string;
     color?: string;
@@ -19,13 +18,16 @@ export default function SliderButton({ items, defaultActive, onChange, backgroun
     const theme = useTheme();
     const [activeKey, setActive] = useState<number|null>(null);
 
+    const unselectEnabled = enableUnselect ?? false;
     const bgColor = backgroundColor ?? theme.backgroundAlt;
     const _color = color ?? theme.text;
 
     const handlePress = useCallback((key: number) => {
+        if(unselectEnabled && key === activeKey) key = -1;
+        if(key === activeKey) return;
         setActive(key);
         onChange?.(key);
-    }, [onChange])
+    }, [activeKey, onChange, unselectEnabled])
 
     useEffect(() => {
         if(defaultActive != null) setActive(defaultActive);
